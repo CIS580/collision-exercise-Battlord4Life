@@ -8,11 +8,15 @@ namespace CollisionExample
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        
+
         private CoinSprite[] coins;
         private SlimeGhostSprite slimeGhost;
         private SpriteFont spriteFont;
         private int coinsLeft;
+
+        private Texture2D ball;
+
+
 
         /// <summary>
         /// A game demonstrating collision detection
@@ -58,6 +62,7 @@ namespace CollisionExample
             foreach (var coin in coins) coin.LoadContent(Content);
             slimeGhost.LoadContent(Content);
             spriteFont = Content.Load<SpriteFont>("arial");
+            ball = Content.Load<Texture2D>("basketball");
         }
 
         /// <summary>
@@ -72,6 +77,26 @@ namespace CollisionExample
             // TODO: Add your update logic here
             slimeGhost.Update(gameTime);
 
+            bool changed = false;
+
+            foreach (var coin in coins)
+            {
+                if (!changed)
+                {
+                    if (coin.Bounds.CollidesWith(slimeGhost.Bounds))
+                    {
+                        slimeGhost.Color = Color.Crimson;
+                        coin.Collected = true;
+                        changed = true;
+                        coinsLeft--;
+                    }
+                    else
+                    {
+                        slimeGhost.Color = Color.White;
+                    }
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -85,9 +110,20 @@ namespace CollisionExample
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            foreach (var coin in coins) coin.Draw(gameTime, spriteBatch);
+            foreach (var coin in coins)
+            {
+                coin.Draw(gameTime, spriteBatch);
+                /*var rec = new Rectangle((int)coin.Bounds.Center.X - (int)coin.Bounds.Radius,
+                                                (int)coin.Bounds.Center.Y - (int)coin.Bounds.Radius,
+                                                (int)coin.Bounds.Radius*2, (int)coin.Bounds.Radius*2);
+                spriteBatch.Draw(ball, rec, Color.White);*/
+            }
             slimeGhost.Draw(gameTime, spriteBatch);
-            spriteBatch.DrawString(spriteFont, $"Coins left: {coinsLeft}", new Vector2(2,2), Color.Gold);
+            /*var rect = new Rectangle((int)slimeGhost.Bounds.Center.X - (int)slimeGhost.Bounds.Radius,
+                                                (int)slimeGhost.Bounds.Center.Y - (int)slimeGhost.Bounds.Radius,
+                                                (int)slimeGhost.Bounds.Radius * 2, (int)slimeGhost.Bounds.Radius * 2);
+            spriteBatch.Draw(ball, rect, Color.Blue);*/
+            spriteBatch.DrawString(spriteFont, $"Coins left: {coinsLeft}", new Vector2(2, 2), Color.Gold);
             spriteBatch.End();
 
             base.Draw(gameTime);
