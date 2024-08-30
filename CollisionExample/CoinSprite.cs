@@ -56,7 +56,7 @@ namespace CollisionExample
         /// <param name="spriteBatch">The spritebatch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (!Collected) return;
+            if (Collected) return;
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
             if(animationTimer > ANIMATION_SPEED)

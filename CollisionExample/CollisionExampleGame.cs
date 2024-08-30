@@ -83,7 +83,7 @@ namespace CollisionExample
             {
                 if (!changed)
                 {
-                    if (coin.Bounds.CollidesWith(slimeGhost.Bounds))
+                    if (!coin.Collected && coin.Bounds.CollidesWith(slimeGhost.Bounds))
                     {
                         slimeGhost.Color = Color.Crimson;
                         coin.Collected = true;
